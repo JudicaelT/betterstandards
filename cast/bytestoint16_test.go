@@ -9,7 +9,7 @@ import (
 
 func TestCastBytesToInt16LittleEndianWithMoreThanOneByte(t *testing.T) {
 	// Given a slice of two bytes and a slice of more than two bytes
-	twoByteSlice := []byte{255, 42}
+		twoByteSlice := []byte{255, 42}
 	threeByteSlice := []byte{255, 42, 33, 200, 42}
 
 	// When we cast the slices to int16 LittleEndian
