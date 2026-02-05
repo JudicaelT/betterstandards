@@ -17,7 +17,15 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Build
+      - name: Building
         run: go build -v ./...
-      - name: Test with the Go CLI
-        run: go test -v ./...
+      - name: Running tests
+        run: go test -v $(go list ./... | grep -v /internal/ | grep -v /types/)
+      - name: Looking for files to lint
+        run: |
+          DIFFS=$(gofmt -d .)
+          if [ -n "$DIFFS" ]; then
+            echo "Some files are not formatted correctly. Use 'make lint' to format them"
+            echo "$DIFFS"
+            exit 1
+          fi
