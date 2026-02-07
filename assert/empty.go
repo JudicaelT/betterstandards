@@ -1,12 +1,15 @@
 package assert
 
+import "fmt"
+
 func EmptySlice[T any](value []T) {
 	var numberOfElements int = len(value)
-	Condition(
-		numberOfElements == 0,
-		"Failed asserting that slice is empty. Found '%d' elements",
-		numberOfElements,
-	)
+	if numberOfElements != 0 {
+		panic(fmt.Errorf(
+			"Failed asserting that slice is empty. Found '%d' elements",
+			numberOfElements,
+		))
+	}
 }
 
 func EmptyString(s string) {
