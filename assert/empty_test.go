@@ -2,10 +2,51 @@ package assert_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/JudicaelT/betterstandards/assert"
 	"github.com/JudicaelT/betterstandards/internal/test"
+	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
 )
+
+func BenchmarkAssertEmptyWithSlice(b *testing.B) {
+	// Given an empty slice
+	var emptySlice []any
+
+	// When we run assert.EmptySlice
+	b.ResetTimer()
+	assert.EmptySlice(emptySlice)
+	b.StopTimer()
+
+	// Then it should run under 170ns
+	maxExecutionDuration := 170 * time.Nanosecond
+	benchmark.AssertMaxRunDuration(b, "assert.EmptySlice", maxExecutionDuration)
+
+	// And there should not be any heap allocation
+	var avgAllocsPerRun float64 = testing.AllocsPerRun(1000, func() {
+		assert.EmptySlice(emptySlice)
+	})
+	if avgAllocsPerRun > 0 {
+		b.Errorf(
+			"Failed asserting that there were no heap allocations. Got %f on average on %d runs",
+			avgAllocsPerRun,
+			1000,
+		)
+	}
+}
+
+func BenchmarkAssertEmptyWithNonEmptySlice(b *testing.B) {
+	// Given a non-empty slice
+	nonEmptySlice := []int8{1, 2, 3}
+
+	// assert.EmptySlice should run under 20μs
+	maxExecutionDuration := 20 * time.Microsecond
+	defer benchmark.AssertMaxRunDuration(b, "assert.EmptySlice", maxExecutionDuration)
+
+	// When we benchmark assert.EmptySlice and it panics
+	b.ResetTimer()
+	assert.EmptySlice(nonEmptySlice)
+}
 
 func TestAssertEmptyWithSlice(t *testing.T) {
 	// Given an empty slice

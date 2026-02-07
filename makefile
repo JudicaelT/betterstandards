@@ -13,5 +13,9 @@ test: # Run all tests
 	@echo -e "\e[0;32mRunning tests...\e[0m"
 	$(GO) test -cover $(DIRECTORIES_TO_TEST)
 
+bench: # Run benchmark tests
+	@echo -e "\e[0;32mRunning benchmark tests...\e[0m"
+	$(GO) test -bench=. -benchmem $(DIRECTORIES_TO_TEST)
+
 lint: # Format source files
 	$(GOFMT) -d -w .
