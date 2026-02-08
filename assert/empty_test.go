@@ -15,7 +15,7 @@ func BenchmarkAssertEmptySlice(b *testing.B) {
 	// When we run assert.EmptySlice
 	codeToRun := func() { assert.EmptySlice(emptySlice) }
 	// Then it runs in 2ns or less
-	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond * 2)
+	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond*2)
 	// And there are no heap allocations
 	benchmark.AssertNoAllocs(b, codeToRun)
 }
@@ -26,29 +26,29 @@ func BenchmarkAssertEmptyString(b *testing.B) {
 	// When we run assert.EmptyString
 	codeToRun := func() { assert.EmptyString(emptyString) }
 	// Then it runs in 2ns or less
-	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond * 2)
+	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond*2)
 	// And there are no heap allocations
 	benchmark.AssertNoAllocs(b, codeToRun)
 }
 
 func BenchmarkAssertEmptyMap(b *testing.B) {
 	// Given an empty map
-	emptyMap := make(map[int]string) 
+	emptyMap := make(map[int]string)
 	// When we run assert.EmptyMap
 	codeToRun := func() { assert.EmptyMap(emptyMap) }
 	// Then it runs in 2ns or less
-	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond * 2)
+	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond*2)
 	// And there are no heap allocations
 	benchmark.AssertNoAllocs(b, codeToRun)
 }
 
 func BenchmarkAssertEmptyChannel(b *testing.B) {
 	// Given an empty map
-	emptyChannel := make(chan any) 
+	emptyChannel := make(chan any)
 	// When we run assert.EmptyChannel
 	codeToRun := func() { assert.EmptyChannel(emptyChannel) }
 	// Then it runs in 4ns or less
-	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond * 4)
+	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond*4)
 	// And there are no heap allocations
 	benchmark.AssertNoAllocs(b, codeToRun)
 }
