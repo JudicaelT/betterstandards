@@ -6,7 +6,20 @@ import (
 
 	"github.com/JudicaelT/betterstandards/assert"
 	"github.com/JudicaelT/betterstandards/internal/test"
+	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
 )
+
+func BenchmarkAssertCondition(b *testing.B) {
+	codeUnderTest := func() { assert.Condition(true, "fail message") }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
+}
+
+func BenchmarkAssertConditionWithDynamicMessage(b *testing.B) {
+	codeUnderTest := func() { assert.Condition(true, "%s fail message", "dynamic") }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
+}
 
 func TestAssertCondition(t *testing.T) {
 	// assert.Condition() should not panic

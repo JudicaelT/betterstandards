@@ -1,8 +1,9 @@
 package assert
 
+import "errors"
+
 func NotNil(value any) {
-	Condition(
-		value != nil,
-		"Failed asserting that value is not nil",
-	)
+	if value == nil {
+		panic(errors.New("Failed asserting that value is not nil"))
+	}
 }

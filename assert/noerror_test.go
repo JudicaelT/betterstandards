@@ -6,7 +6,14 @@ import (
 
 	"github.com/JudicaelT/betterstandards/assert"
 	"github.com/JudicaelT/betterstandards/internal/test"
+	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
 )
+
+func BenchmarkAssertNoError(b *testing.B) {
+	codeUnderTest := func() { assert.NoError(nil) }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
+}
 
 func TestAssertNoError(t *testing.T) {
 	// assert.NoError() should not panic

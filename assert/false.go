@@ -1,8 +1,9 @@
 package assert
 
+import "errors"
+
 func False(value bool) {
-	Condition(
-		value == false,
-		"Failed asserting that value is false",
-	)
+	if value == true {
+		panic(errors.New("Failed asserting that value is false"))
+	}
 }

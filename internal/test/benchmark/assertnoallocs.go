@@ -7,6 +7,7 @@ func AssertNoAllocs(
 	codeUnderTest func(),
 ) {
 	b.Run("allocs", func(b *testing.B) {
+		b.ReportAllocs()
 		avgAllocs := testing.AllocsPerRun(1000, codeUnderTest)
 		if avgAllocs != 0 {
 			b.Fatalf(

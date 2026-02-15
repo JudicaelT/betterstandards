@@ -5,7 +5,14 @@ import (
 
 	"github.com/JudicaelT/betterstandards/assert"
 	"github.com/JudicaelT/betterstandards/internal/test"
+	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
 )
+
+func BenchmarkAssertEqual(b *testing.B) {
+	codeUnderTest := func() { assert.Equal(42, 42) }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
+}
 
 func TestAssertEqual(t *testing.T) {
 	// assert.Equal() should not panic
@@ -18,7 +25,6 @@ func TestAssertEqual(t *testing.T) {
 
 func TestAssertEqualWithDifferentValues(t *testing.T) {
 	// assert.Equal() should panic
-
 	functionUnderTest := "assert.Equal"
 	expectedErrorMessage := "Failed asserting that 'Hello' is equal to 'World'"
 	defer test.ShouldPanic(t, functionUnderTest, expectedErrorMessage)

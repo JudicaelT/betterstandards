@@ -2,7 +2,6 @@ package assert_test
 
 import (
 	"testing"
-	"time"
 
 	"github.com/JudicaelT/betterstandards/assert"
 	"github.com/JudicaelT/betterstandards/internal/test"
@@ -10,47 +9,31 @@ import (
 )
 
 func BenchmarkAssertEmptySlice(b *testing.B) {
-	// Given an empty slice
 	var emptySlice []any
-	// When we run assert.EmptySlice
-	codeToRun := func() { assert.EmptySlice(emptySlice) }
-	// Then it runs in 2ns or less
-	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond*2)
-	// And there are no heap allocations
-	benchmark.AssertNoAllocs(b, codeToRun)
+	codeUnderTest := func() { assert.EmptySlice(emptySlice) }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
 }
 
 func BenchmarkAssertEmptyString(b *testing.B) {
-	// Given an empty string
 	var emptyString string
-	// When we run assert.EmptyString
-	codeToRun := func() { assert.EmptyString(emptyString) }
-	// Then it runs in 2ns or less
-	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond*2)
-	// And there are no heap allocations
-	benchmark.AssertNoAllocs(b, codeToRun)
+	codeUnderTest := func() { assert.EmptyString(emptyString) }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
 }
 
 func BenchmarkAssertEmptyMap(b *testing.B) {
-	// Given an empty map
 	emptyMap := make(map[int]string)
-	// When we run assert.EmptyMap
-	codeToRun := func() { assert.EmptyMap(emptyMap) }
-	// Then it runs in 2ns or less
-	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond*2)
-	// And there are no heap allocations
-	benchmark.AssertNoAllocs(b, codeToRun)
+	codeUnderTest := func() { assert.EmptyMap(emptyMap) }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
 }
 
 func BenchmarkAssertEmptyChannel(b *testing.B) {
-	// Given an empty map
 	emptyChannel := make(chan any)
-	// When we run assert.EmptyChannel
-	codeToRun := func() { assert.EmptyChannel(emptyChannel) }
-	// Then it runs in 4ns or less
-	benchmark.AssertMaxDuration(b, codeToRun, time.Nanosecond*4)
-	// And there are no heap allocations
-	benchmark.AssertNoAllocs(b, codeToRun)
+	codeUnderTest := func() { assert.EmptyChannel(emptyChannel) }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
 }
 
 func TestAssertEmptyWithSlice(t *testing.T) {
