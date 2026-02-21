@@ -27,7 +27,6 @@ func TestSafeSub(t *testing.T) {
 	}
 }
 
-
 func TestSafeSubWithOverflow(t *testing.T) {
 	// Given 2 integers that will overflow if you sub them together
 	var a, b int8 = math.MinInt8, 1
