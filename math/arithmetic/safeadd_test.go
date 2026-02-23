@@ -4,8 +4,37 @@ import (
 	"math"
 	"testing"
 
+	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
 	"github.com/JudicaelT/betterstandards/math/arithmetic"
 )
+
+func BenchmarkSafeAdd(bench *testing.B) {
+	var a, b int8 = 2, 2
+	codeUnderTest := func() { arithmetic.SafeAdd(a, b) }
+	benchmark.AvgRuntime(bench, codeUnderTest)
+	benchmark.AssertNoAllocs(bench, codeUnderTest)
+}
+
+func BenchmarkSafeAddWithOverflow(bench *testing.B) {
+	var a, b int8 = math.MaxInt8, 1
+	codeUnderTest := func() { arithmetic.SafeAdd(a, b) }
+	benchmark.AvgRuntime(bench, codeUnderTest)
+	benchmark.AssertNoAllocs(bench, codeUnderTest)
+}
+
+func BenchmarkSafeAddWithVariaticArguments(bench *testing.B) {
+	var a, b, c int8 = 1, 1, 40
+	codeUnderTest := func() { arithmetic.SafeAdd(a, b, c) }
+	benchmark.AvgRuntime(bench, codeUnderTest)
+	benchmark.AssertNoAllocs(bench, codeUnderTest)
+}
+
+func BenchmarkSafeAddWithVariaticArgumentsCausingOverflow(bench *testing.B) {
+	var a, b, c int8 = 1, 1, math.MaxInt8
+	codeUnderTest := func() { arithmetic.SafeAdd(a, b, c) }
+	benchmark.AvgRuntime(bench, codeUnderTest)
+	benchmark.AssertNoAllocs(bench, codeUnderTest)
+}
 
 func TestSafeAdd(t *testing.T) {
 	// Given 2 integers
@@ -13,17 +42,17 @@ func TestSafeAdd(t *testing.T) {
 
 	// When we add them together using SafeAdd
 	var sum int8
-	var err error
-	sum, err = arithmetic.SafeAdd(a, b)
+	var hasOverflowed bool
+	sum, hasOverflowed = arithmetic.SafeAdd(a, b)
 
 	// Then we should get the sum of those 2 integers
 	if sum != 4 {
 		t.Error("Failed asserting that the sum is equal to 4. Got:", sum)
 	}
 
-	// And there should not be an error
-	if err != nil {
-		t.Error("Failed asserting that there is no error. Got:", err)
+	// And it should not have overflowed
+	if hasOverflowed {
+		t.Error("Failed asserting addition did not cause an overflow")
 	}
 }
 
@@ -33,8 +62,8 @@ func TestSafeAddWithOverflow(t *testing.T) {
 
 	// When we add them together using SafeAdd
 	var sum int8
-	var err error
-	sum, err = arithmetic.SafeAdd(a, b)
+	var hasOverflowed bool
+	sum, hasOverflowed = arithmetic.SafeAdd(a, b)
 
 	// Then we should get the sum of those 2 integers though it
 	// should not correspond to the "real sum" because it should have overflowed
@@ -42,19 +71,9 @@ func TestSafeAddWithOverflow(t *testing.T) {
 		t.Error("Failed asserting that the sum is equal to -128. Got", sum)
 	}
 
-	// And there should be an error
-	if err == nil {
-		t.Error("Failed asserting that there was an error")
-		return
-	}
-	expectedMessage := "Value of type int8 has overflowed when adding 127 with 1"
-	actualMessage := err.Error()
-	if expectedMessage != actualMessage {
-		t.Errorf(
-			"Expected error message '%s' but got '%s'",
-			expectedMessage,
-			actualMessage,
-		)
+	// And we should get a hint that it overflowed
+	if !hasOverflowed {
+		t.Error("Failed asserting addition overflowed")
 	}
 }
 
@@ -64,17 +83,17 @@ func TestSafeAddWithVariaticArguments(t *testing.T) {
 
 	// When we add them together using SafeAdd
 	var sum int8
-	var err error
-	sum, err = arithmetic.SafeAdd(a, b, c)
+	var hasOverflowed bool
+	sum, hasOverflowed = arithmetic.SafeAdd(a, b, c)
 
 	// Then we should get the sum of those 3 integers
 	if sum != 42 {
 		t.Error("Failed asserting that the sum is equal to 42. Got:", sum)
 	}
 
-	// And there should not be an error
-	if err != nil {
-		t.Error("Failed asserting that there is no error. Got:", err)
+	// And it should not have overflowed
+	if hasOverflowed {
+		t.Error("Failed asserting addition did not cause an overflow")
 	}
 }
 
@@ -84,8 +103,8 @@ func TestSafeAddWithVariaticArgumentsCausingOverflow(t *testing.T) {
 
 	// When we add them together using SafeAdd
 	var sum int8
-	var err error
-	sum, err = arithmetic.SafeAdd(a, b, c)
+	var hasOverflowed bool
+	sum, hasOverflowed = arithmetic.SafeAdd(a, b, c)
 
 	// Then we should get the sum of those 3 integers though it
 	// should not correspond to the "real sum" because it should have overflowed
@@ -93,18 +112,8 @@ func TestSafeAddWithVariaticArgumentsCausingOverflow(t *testing.T) {
 		t.Error("Failed asserting that the sum is equal to -127. Got", sum)
 	}
 
-	// And there should be an error
-	if err == nil {
-		t.Error("Failed asserting that err not nil")
-		return
-	}
-	expectedMessage := "Value of type int8 has overflowed when adding 2 with 127"
-	actualMessage := err.Error()
-	if expectedMessage != actualMessage {
-		t.Errorf(
-			"Expected error message '%s' but got '%s'",
-			expectedMessage,
-			actualMessage,
-		)
+	// And we should get a hint that it overflowed
+	if !hasOverflowed {
+		t.Error("Failed asserting addition overflowed")
 	}
 }

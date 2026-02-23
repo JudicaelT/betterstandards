@@ -9,7 +9,7 @@ MAKEFLAGS += --silent
 help: # Show available make commands
 	@awk 'BEGIN {FS = ":.*#"} /^[a-zA-Z0-9_-]+:.*#/ { printf "  %-15s %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 
-test: # Run all tests
+test: # Run unit tests
 	@echo -e "\e[0;32mRunning tests...\e[0m"
 	$(GO) test -cover $(DIRECTORIES_TO_TEST)
 
