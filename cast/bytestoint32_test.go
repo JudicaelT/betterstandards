@@ -29,7 +29,7 @@ func TestCastBytesToInt32LittleEndianWithMoreThanThreeBytes(t *testing.T) {
 		// And not return an error
 		if err != nil {
 			t.Errorf(
-				"(Dataset: %v) Failed asserting that error nil: %s",
+				"(Dataset: %v) Failed asserting that error is nil: %s",
 				byteSlice,
 				err,
 			)
@@ -59,7 +59,7 @@ func TestCastBytesToInt32BigEndianWithMoreThanThreeByte(t *testing.T) {
 		// And not return an error
 		if err != nil {
 			t.Errorf(
-				"(Dataset: %v) Failed asserting that error nil: %s",
+				"(Dataset: %v) Failed asserting that error is nil: %s",
 				byteSlice,
 				err,
 			)
