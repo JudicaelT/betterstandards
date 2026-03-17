@@ -16,7 +16,7 @@ func TestIsEmpty(t *testing.T) {
 	assert.False(t, isEmpty)
 }
 
-func TestEmptyIsEmpty(t *testing.T) {
+func TestEmptyListIsEmpty(t *testing.T) {
 	// Given an empty DoublyLinkedList
 	list := doublylinkedlist.New[int8]()
 	// When we check if the list is empty
@@ -142,7 +142,7 @@ func TestTraverseBackward(t *testing.T) {
 	assert.Equal(t, 3, i)
 }
 
-func TestPopHeadOfDoublyLinkedList(t *testing.T) {
+func TestPopHead(t *testing.T) {
 	// Given a DoublyLinkedList
 	list := doublylinkedlist.New[int8](9, 10, 21)
 
@@ -156,7 +156,7 @@ func TestPopHeadOfDoublyLinkedList(t *testing.T) {
 	assertListsMatch(t, expectedList, list)
 }
 
-func TestPopHeadOfEmptyDoublyLinkedList(t *testing.T) {
+func TestPopHeadOfEmptyList(t *testing.T) {
 	// Given an empty DoublyLinkedList
 	list := doublylinkedlist.New[int8]()
 	// When we pop the head of the list
@@ -165,7 +165,7 @@ func TestPopHeadOfEmptyDoublyLinkedList(t *testing.T) {
 	assert.Nil(t, removedHead)
 }
 
-func TestPopTailOfDoublyLinkedList(t *testing.T) {
+func TestPopTail(t *testing.T) {
 	// Given a DoublyLinkedList
 	list := doublylinkedlist.New(9, 10, 21)
 
@@ -179,7 +179,7 @@ func TestPopTailOfDoublyLinkedList(t *testing.T) {
 	assertListsMatch(t, expectedList, list)
 }
 
-func TestPopTailOfEmptyDoublyLinkedList(t *testing.T) {
+func TestPopTailOfEmptyList(t *testing.T) {
 	// Given an empty DoublyLinkedList
 	list := doublylinkedlist.New[int8]()
 	// When we pop the tail of the list
