@@ -129,7 +129,7 @@ func TestAssertEmptyWithNonEmptyChannel(t *testing.T) {
 	nonEmptyChannel := make(chan int, 1)
 	nonEmptyChannel <- 1
 
-	// assert.EmptyChannel() should not panic
+	// assert.EmptyChannel() should panic
 	functionUnderTest := "assert.EmptyChannel"
 	expectedMessage := "Failed asserting that channel is empty. Found '1' elements"
 	defer test.ShouldPanic(t, functionUnderTest, expectedMessage)
