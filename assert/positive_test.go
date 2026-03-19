@@ -19,7 +19,7 @@ func TestAssertPositive(t *testing.T) {
 	functionUnderTest := "assert.Positive"
 	defer test.ShouldNotPanic(t, functionUnderTest)
 
-	// When positive value is passed
+	// When a positive value is passed
 	assert.Positive(0)
 }
 
@@ -29,6 +29,6 @@ func TestAssertPositiveWithNegativeNumber(t *testing.T) {
 	expectedErrorMessage := "Failed asserting that value is positive. Got: -0.00021"
 	defer test.ShouldPanic(t, functionUnderTest, expectedErrorMessage)
 
-	// When value negative value is passed
+	// When a negative value value is passed
 	assert.Positive(float64(-0.00021))
 }
