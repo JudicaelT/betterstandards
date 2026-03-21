@@ -7,7 +7,6 @@ import (
 )
 
 var InsertAfterOrphanNodeErr error = errors.New("Cannot insert a value after orphan node")
-var RemoveNodeWithWrongPrevErr error = errors.New("Cannot insert a value after orphan node")
 
 type List[T any] struct {
 	head *Node[T]
