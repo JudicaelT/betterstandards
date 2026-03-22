@@ -6,6 +6,7 @@ import (
 
 	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
 	"github.com/JudicaelT/betterstandards/math/arithmetic"
+	"github.com/stretchr/testify/assert"
 )
 
 func BenchmarkSafeSub(bench *testing.B) {
@@ -42,39 +43,29 @@ func TestSafeSub(t *testing.T) {
 
 	// When we substract them together using SafeSub
 	var diff int8
-	var hasOverflowed bool
-	diff, hasOverflowed = arithmetic.SafeSub(a, b)
+	var err error
+	diff, err = arithmetic.SafeSub(a, b)
 
 	// Then we should get the difference of those 2 integers
-	if diff != 8 {
-		t.Error("Failed asserting that the difference is equal to 8. Got:", diff)
-	}
-
+	assert.Equal(t, int8(8), diff)
 	// And it should not have overflowed
-	if hasOverflowed {
-		t.Error("Failed asserting subtraction did not cause an overflow")
-	}
+	assert.NoError(t, err)
 }
 
 func TestSafeSubWithOverflow(t *testing.T) {
-	// Given 2 integers that will overflow if you sub them together
+	// Given 2 integers that will overflow if subtracted together
 	var a, b int8 = math.MinInt8, 1
 
 	// When we sub them together using SafeSub
 	var diff int8
-	var hasOverflowed bool
-	diff, hasOverflowed = arithmetic.SafeSub(a, b)
+	var err error
+	diff, err = arithmetic.SafeSub(a, b)
 
 	// Then we should get the diff of those 2 integers though it
 	// should not correspond to the "real diff" because it should have overflowed
-	if diff != 127 {
-		t.Error("Failed asserting that the difference is equal to 127. Got", diff)
-	}
-
+	assert.Equal(t, int8(127), diff)
 	// And we should get a hint that it overflowed
-	if !hasOverflowed {
-		t.Error("Failed asserting subtraction overflowed")
-	}
+	assert.Same(t, arithmetic.SubOverflowErr, err)
 }
 
 func TestSafeSubWithVariaticArguments(t *testing.T) {
@@ -83,18 +74,13 @@ func TestSafeSubWithVariaticArguments(t *testing.T) {
 
 	// When we sub them together using SafeSub
 	var diff int8
-	var hasOverflowed bool
-	diff, hasOverflowed = arithmetic.SafeSub(a, b, c)
+	var err error
+	diff, err = arithmetic.SafeSub(a, b, c)
 
 	// Then we should get the diff of those 3 integers
-	if diff != 42 {
-		t.Error("Failed asserting that the difference is equal to 42. Got:", diff)
-	}
-
+	assert.Equal(t, int8(42), diff)
 	// And it should not have overflowed
-	if hasOverflowed {
-		t.Error("Failed asserting subtraction did not cause an overflow")
-	}
+	assert.NoError(t, err)
 }
 
 func TestSafeSubWithVariaticArgumentsCausingOverflow(t *testing.T) {
@@ -103,17 +89,12 @@ func TestSafeSubWithVariaticArgumentsCausingOverflow(t *testing.T) {
 
 	// When we add them together using SafeSub
 	var diff int8
-	var hasOverflowed bool
-	diff, hasOverflowed = arithmetic.SafeSub(a, b, c)
+	var err error
+	diff, err = arithmetic.SafeSub(a, b, c)
 
 	// Then we should get the diff of those 3 integers though it
 	// should not correspond to the "real diff" because it should have overflowed
-	if diff != 127 {
-		t.Error("Failed asserting that the difference is equal to 127. Got", diff)
-	}
-
+	assert.Equal(t, int8(127), diff)
 	// And we should get a hint that it overflowed
-	if !hasOverflowed {
-		t.Error("Failed asserting subtraction overflowed")
-	}
+	assert.Same(t, arithmetic.SubOverflowErr, err)
 }

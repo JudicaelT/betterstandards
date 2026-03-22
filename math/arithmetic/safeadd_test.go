@@ -6,6 +6,7 @@ import (
 
 	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
 	"github.com/JudicaelT/betterstandards/math/arithmetic"
+	"github.com/stretchr/testify/assert"
 )
 
 func BenchmarkSafeAdd(bench *testing.B) {
@@ -42,39 +43,29 @@ func TestSafeAdd(t *testing.T) {
 
 	// When we add them together using SafeAdd
 	var sum int8
-	var hasOverflowed bool
-	sum, hasOverflowed = arithmetic.SafeAdd(a, b)
+	var err error
+	sum, err = arithmetic.SafeAdd(a, b)
 
 	// Then we should get the sum of those 2 integers
-	if sum != 4 {
-		t.Error("Failed asserting that the sum is equal to 4. Got:", sum)
-	}
-
+	assert.Equal(t, int8(4), sum)
 	// And it should not have overflowed
-	if hasOverflowed {
-		t.Error("Failed asserting addition did not cause an overflow")
-	}
+	assert.NoError(t, err)
 }
 
 func TestSafeAddWithOverflow(t *testing.T) {
-	// Given 2 integers that will overflow if you add them together
+	// Given 2 integers that will overflow if added together
 	var a, b int8 = math.MaxInt8, 1
 
 	// When we add them together using SafeAdd
 	var sum int8
-	var hasOverflowed bool
-	sum, hasOverflowed = arithmetic.SafeAdd(a, b)
+	var err error
+	sum, err = arithmetic.SafeAdd(a, b)
 
 	// Then we should get the sum of those 2 integers though it
 	// should not correspond to the "real sum" because it should have overflowed
-	if sum != -128 {
-		t.Error("Failed asserting that the sum is equal to -128. Got", sum)
-	}
-
+	assert.Equal(t, int8(-128), sum)
 	// And we should get a hint that it overflowed
-	if !hasOverflowed {
-		t.Error("Failed asserting addition overflowed")
-	}
+	assert.Same(t, arithmetic.AddOverflowErr, err)
 }
 
 func TestSafeAddWithVariaticArguments(t *testing.T) {
@@ -83,18 +74,13 @@ func TestSafeAddWithVariaticArguments(t *testing.T) {
 
 	// When we add them together using SafeAdd
 	var sum int8
-	var hasOverflowed bool
-	sum, hasOverflowed = arithmetic.SafeAdd(a, b, c)
+	var err error
+	sum, err = arithmetic.SafeAdd(a, b, c)
 
 	// Then we should get the sum of those 3 integers
-	if sum != 42 {
-		t.Error("Failed asserting that the sum is equal to 42. Got:", sum)
-	}
-
+	assert.Equal(t, int8(42), sum)
 	// And it should not have overflowed
-	if hasOverflowed {
-		t.Error("Failed asserting addition did not cause an overflow")
-	}
+	assert.NoError(t, err)
 }
 
 func TestSafeAddWithVariaticArgumentsCausingOverflow(t *testing.T) {
@@ -103,17 +89,12 @@ func TestSafeAddWithVariaticArgumentsCausingOverflow(t *testing.T) {
 
 	// When we add them together using SafeAdd
 	var sum int8
-	var hasOverflowed bool
-	sum, hasOverflowed = arithmetic.SafeAdd(a, b, c)
+	var err error
+	sum, err = arithmetic.SafeAdd(a, b, c)
 
 	// Then we should get the sum of those 3 integers though it
 	// should not correspond to the "real sum" because it should have overflowed
-	if sum != -127 {
-		t.Error("Failed asserting that the sum is equal to -127. Got", sum)
-	}
-
+	assert.Equal(t, int8(-127), sum)
 	// And we should get a hint that it overflowed
-	if !hasOverflowed {
-		t.Error("Failed asserting addition overflowed")
-	}
+	assert.Same(t, arithmetic.AddOverflowErr, err)
 }

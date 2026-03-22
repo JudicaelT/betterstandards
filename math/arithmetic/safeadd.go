@@ -1,16 +1,25 @@
 package arithmetic
 
-import "github.com/JudicaelT/betterstandards/types"
+import (
+	"errors"
 
-func SafeAdd[T types.Number](a, b T, moreNumbersToAdd ...T) (sum T, hasOverflowed bool) {
-	sum = a + b
-	hasOverflowed = addHasOverflowed(sum, a, b)
+	"github.com/JudicaelT/betterstandards/types"
+)
+
+var AddOverflowErr error = errors.New("An overflow occurred while adding two numbers")
+
+func SafeAdd[T types.Number](a, b T, moreNumbersToAdd ...T) (T, error) {
+	var sum T = a + b
+	var hasOverflowed bool = addHasOverflowed(sum, a, b)
 	for _, number := range moreNumbersToAdd {
 		var sumTmp T = sum
 		sum += number
 		hasOverflowed = hasOverflowed || addHasOverflowed(sum, sumTmp, number)
 	}
-	return
+	if hasOverflowed {
+		return sum, AddOverflowErr
+	}
+	return sum, nil
 }
 
 func addHasOverflowed[T types.Number](sum, a, b T) bool {

@@ -5,7 +5,9 @@ import (
 	"testing"
 
 	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
+	"github.com/JudicaelT/betterstandards/math/arithmetic"
 	"github.com/JudicaelT/betterstandards/slice"
+	"github.com/stretchr/testify/assert"
 )
 
 func BenchmarkSum(bench *testing.B) {
@@ -28,18 +30,13 @@ func TestSum(t *testing.T) {
 
 	// When we calculate the sum of all elements in the slice
 	var sum int8
-	var hasOverflowed bool
-	sum, hasOverflowed = slice.Sum(intSlice)
+	var err error
+	sum, err = slice.Sum(intSlice)
 
 	// Then we should get the sum of all elements in the slice
-	if sum != 10 {
-		t.Error("Failed asserting that the sum of the slice is 10. Got", sum)
-	}
-
+	assert.Equal(t, int8(10), sum)
 	// And it should not have overflowed
-	if hasOverflowed {
-		t.Error("Failed asserting that there was no overflow")
-	}
+	assert.NoError(t, err)
 }
 
 func TestSumWithEmptySlice(t *testing.T) {
@@ -48,18 +45,13 @@ func TestSumWithEmptySlice(t *testing.T) {
 
 	// When we calculate the sum of the slice
 	var sum int
-	var hasOverflowed bool
-	sum, hasOverflowed = slice.Sum(intSlice)
+	var err error
+	sum, err = slice.Sum(intSlice)
 
 	// Then we should get 0
-	if sum != 0 {
-		t.Error("Failed asserting that the sum of the slice is 0. Got", sum)
-	}
-
+	assert.Equal(t, 0, sum)
 	// And it should not have overflowed
-	if hasOverflowed {
-		t.Error("Failed asserting that there was no overflow")
-	}
+	assert.NoError(t, err)
 }
 
 func TestSumWithSliceContainingOneElement(t *testing.T) {
@@ -68,18 +60,13 @@ func TestSumWithSliceContainingOneElement(t *testing.T) {
 
 	// When we calculate the sum of the slice
 	var sum int
-	var hasOverflowed bool
-	sum, hasOverflowed = slice.Sum(intSlice)
+	var err error
+	sum, err = slice.Sum(intSlice)
 
 	// Then we should get the only element in the slice
-	if sum != 42 {
-		t.Error("Failed asserting that the sum of the slice is 42. Got", sum)
-	}
-
+	assert.Equal(t, 42, sum)
 	// And it should not have overflowed
-	if hasOverflowed {
-		t.Error("Failed asserting that there was no overflow")
-	}
+	assert.NoError(t, err)
 }
 
 func TestSumCausingOverflow(t *testing.T) {
@@ -89,17 +76,12 @@ func TestSumCausingOverflow(t *testing.T) {
 
 	// When we calculate the sum of all the elements in the slice
 	var sum int32
-	var hasOverflowed bool
-	sum, hasOverflowed = slice.Sum(intSlice)
+	var err error
+	sum, err = slice.Sum(intSlice)
 
 	// Then we should get the sum of all the elements in the slice though it
 	// should not correspond to the "real sum" because it should have overflowed
-	if sum != -2147483648 {
-		t.Error("Failed asserting that the sum of the slice is -2147483648. Got:", sum)
-	}
-
+	assert.Equal(t, int32(-2147483648), sum)
 	// And we should get a hint that it overflowed
-	if !hasOverflowed {
-		t.Error("Failed asserting that slice.Sum() caused an overflow")
-	}
+	assert.Same(t, arithmetic.AddOverflowErr, err)
 }

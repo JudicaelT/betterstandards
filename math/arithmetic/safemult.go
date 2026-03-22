@@ -1,16 +1,25 @@
 package arithmetic
 
-import "github.com/JudicaelT/betterstandards/types"
+import (
+	"errors"
 
-func SafeMult[T types.Number](a, b T, moreNumbersToMult ...T) (product T, hasOverflowed bool) {
-	product = a * b
-	hasOverflowed = multHasOverflowed(product, a, b)
+	"github.com/JudicaelT/betterstandards/types"
+)
+
+var MultOverflowErr error = errors.New("An overflow occured while multiplying two numbers")
+
+func SafeMult[T types.Number](a, b T, moreNumbersToMult ...T) (T, error) {
+	var product T = a * b
+	var hasOverflowed bool = multHasOverflowed(product, a, b)
 	for _, number := range moreNumbersToMult {
 		var productTmp T = product
 		product *= number
 		hasOverflowed = hasOverflowed || multHasOverflowed(product, productTmp, number)
 	}
-	return
+	if hasOverflowed {
+		return product, MultOverflowErr
+	}
+	return product, nil
 }
 
 func multHasOverflowed[T types.Number](product, a, b T) bool {

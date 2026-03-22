@@ -1,16 +1,25 @@
 package arithmetic
 
-import "github.com/JudicaelT/betterstandards/types"
+import (
+	"errors"
 
-func SafeSub[T types.Number](a, b T, moreNumbersToSub ...T) (diff T, hasOverflowed bool) {
-	diff = a - b
-	hasOverflowed = subHasOverflowed(diff, a, b)
+	"github.com/JudicaelT/betterstandards/types"
+)
+
+var SubOverflowErr error = errors.New("An overflow occured while subtracting two numbers")
+
+func SafeSub[T types.Number](a, b T, moreNumbersToSub ...T) (T, error) {
+	var diff T = a - b
+	var hasOverflowed bool = subHasOverflowed(diff, a, b)
 	for _, number := range moreNumbersToSub {
 		var diffTmp T = diff
 		diff -= number
 		hasOverflowed = hasOverflowed || subHasOverflowed(diff, diffTmp, number)
 	}
-	return
+	if hasOverflowed {
+		return diff, SubOverflowErr
+	}
+	return diff, nil
 }
 
 func subHasOverflowed[T types.Number](diff, a, b T) bool {

@@ -42,13 +42,13 @@ func TestSafeMult(t *testing.T) {
 
 	// When we multiply them together using SafeMult
 	var product int8
-	var hasOverflowed bool
-	product, hasOverflowed = arithmetic.SafeMult(a, b)
+	var err error
+	product, err = arithmetic.SafeMult(a, b)
 
 	// Then we should get the product of those 2 integers
 	assert.Equal(t, int8(42), product)
 	// And it should not have overflowed
-	assert.False(t, hasOverflowed)
+	assert.NoError(t, err)
 }
 
 func TestSafeMultWithOverflow(t *testing.T) {
@@ -57,15 +57,14 @@ func TestSafeMultWithOverflow(t *testing.T) {
 
 	// When we multiply them together using SafeMult
 	var product int8
-	var hasOverflowed bool
-	product, hasOverflowed = arithmetic.SafeMult(a, b)
+	var err error
+	product, err = arithmetic.SafeMult(a, b)
 
 	// Then we should get the product of those 2 integers though it
 	// should not correspond to the "real product" because it should have overflowed
 	assert.Equal(t, int8(-128), product)
-
 	// And we should get a hint that it overflowed
-	assert.True(t, hasOverflowed)
+	assert.Same(t, arithmetic.MultOverflowErr, err)
 }
 
 func TestSafeMultWithVariaticArguments(t *testing.T) {
@@ -74,14 +73,13 @@ func TestSafeMultWithVariaticArguments(t *testing.T) {
 
 	// When we multiply them together using SafeMult
 	var product int8
-	var hasOverflowed bool
-	product, hasOverflowed = arithmetic.SafeMult(a, b, c)
+	var err error
+	product, err = arithmetic.SafeMult(a, b, c)
 
 	// Then we should get the product of those 3 integers
 	assert.Equal(t, int8(84), product)
-
 	// And it should not have overflowed
-	assert.False(t, hasOverflowed)
+	assert.NoError(t, err)
 }
 
 func TestSafeMultWithVariaticArgumentsCausingOverflow(t *testing.T) {
@@ -90,13 +88,12 @@ func TestSafeMultWithVariaticArgumentsCausingOverflow(t *testing.T) {
 
 	// When we multiply them together using SafeMult
 	var product int8
-	var hasOverflowed bool
-	product, hasOverflowed = arithmetic.SafeMult(a, b, c)
+	var err error
+	product, err = arithmetic.SafeMult(a, b, c)
 
 	// Then we should get the product of those 3 integers though it
 	// should not correspond to the "real product" because it should have overflowed
 	assert.Equal(t, int8(-128), product)
-
 	// And we should get a hint that it overflowed
-	assert.True(t, hasOverflowed)
+	assert.Same(t, arithmetic.MultOverflowErr, err)
 }
