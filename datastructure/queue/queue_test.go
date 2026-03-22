@@ -20,9 +20,7 @@ func BenchmarkToSlice(b *testing.B) {
 	queue := queuePackage.NewQueue(9, 10, 21)
 	codeUnderTest := func() { queue.ToSlice() }
 	benchmark.AvgRuntime(b, codeUnderTest)
-	// There should be 1 alloc because the slice is created
-	// with a dynamic length using make([]T, queue.Len())
-	benchmark.AssertAvgAllocs(b, 1, codeUnderTest)
+	benchmark.AssertAvgAllocs(b, 0, codeUnderTest)
 }
 
 func BenchmarkLen(b *testing.B) {
@@ -87,10 +85,23 @@ func TestEnqueue(t *testing.T) {
 	var queueSlice []int = queue.ToSlice()
 	length = queue.Len()
 	assert.Equal(t, 3, length)
-
 	// And the last item should be the enqueued item
 	var enqueuedItem int = queueSlice[2]
 	assert.Equal(t, 21, enqueuedItem)
+}
+
+func TestEnqueueWithEmptyList(t *testing.T) {
+	// Given an empty Queue
+	queue := queuePackage.NewQueue[int]()
+	var length int = queue.Len()
+	assert.Equal(t, 0, length)
+
+	// When we enqueue an item
+	queue.Enqueue(21)
+
+	// Then the queue's length should have increased by 1
+	length = queue.Len()
+	assert.Equal(t, 1, length)
 }
 
 func TestDequeue(t *testing.T) {
@@ -107,14 +118,11 @@ func TestDequeue(t *testing.T) {
 	var queueSlice []int = queue.ToSlice()
 	length = queue.Len()
 	assert.Equal(t, 2, length)
-
 	// And the first inserted item should be removed
 	assert.Equal(t, 10, queueSlice[0])
 	assert.Equal(t, 21, queueSlice[1])
-
 	// And the dequeued item should be the first inserted item
 	assert.Equal(t, 9, dequeuedItem)
-
 	// And there should be no error
 	assert.NoError(t, err)
 }
@@ -130,23 +138,17 @@ func TestDequeueWithEmptyQueue(t *testing.T) {
 
 func TestMustDequeue(t *testing.T) {
 	// Given a Queue
-	queue := queuePackage.NewQueue(9, 10, 21)
+	queue := queuePackage.NewQueue(9)
 	var length int = queue.Len()
-	assert.Equal(t, 3, length)
+	assert.Equal(t, 1, length)
 
 	// When we dequeue
 	var dequeuedItem int = queue.MustDequeue()
 
 	// Then the queue's length should have decreased by 1
-	var queueSlice []int = queue.ToSlice()
 	length = queue.Len()
-	assert.Equal(t, 2, length)
-
-	// And the first inserted item should be removed
-	assert.Equal(t, 10, queueSlice[0])
-	assert.Equal(t, 21, queueSlice[1])
-
-	// And the dequeued items should be the first inserted item
+	assert.Equal(t, 0, length)
+	// And the dequeued item should be the first inserted item
 	assert.Equal(t, 9, dequeuedItem)
 }
 

@@ -4,17 +4,19 @@ import (
 	"errors"
 
 	"github.com/JudicaelT/betterstandards/assert"
-	"github.com/JudicaelT/betterstandards/datastructure/doublylinkedlist"
+	"github.com/JudicaelT/betterstandards/datastructure/singlylinkedlist"
 )
 
 var DequeueFromEmptyQueueErr error = errors.New("Tried to dequeue an item from an empty queue")
 
 type Queue[T any] struct {
-	list *doublylinkedlist.List[T]
+	list *singlylinkedlist.List[T]
+	last *singlylinkedlist.Node[T]
 }
 
 func NewQueue[T any](items ...T) *Queue[T] {
-	return &Queue[T]{doublylinkedlist.New(items...)}
+	list, tail := singlylinkedlist.New(items...)
+	return &Queue[T]{list: list, last: tail}
 }
 
 func (q *Queue[T]) IsEmpty() bool {
@@ -36,7 +38,11 @@ func (q *Queue[T]) Len() int {
 }
 
 func (q *Queue[T]) Enqueue(item T) {
-	q.list.Append(item)
+	if q.last != nil {
+		q.last = assert.Must(q.last.InsertNext(item))
+	} else {
+		q.last = q.list.Append(item)
+	}
 }
 
 func (q *Queue[T]) MustDequeue() T {
@@ -48,6 +54,9 @@ func (q *Queue[T]) Dequeue() (T, error) {
 	if head == nil {
 		var item T
 		return item, DequeueFromEmptyQueueErr
+	}
+	if head == q.last {
+		q.last = nil
 	}
 	return head.Value, nil
 }
