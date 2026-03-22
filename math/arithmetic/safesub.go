@@ -6,7 +6,7 @@ import (
 	"github.com/JudicaelT/betterstandards/types"
 )
 
-var SubOverflowErr error = errors.New("An overflow occured while subtracting two numbers")
+var SubOverflowErr error = errors.New("An overflow occurred while subtracting two numbers")
 
 func SafeSub[T types.Number](a, b T, moreNumbersToSub ...T) (T, error) {
 	var diff T = a - b

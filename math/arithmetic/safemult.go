@@ -6,7 +6,7 @@ import (
 	"github.com/JudicaelT/betterstandards/types"
 )
 
-var MultOverflowErr error = errors.New("An overflow occured while multiplying two numbers")
+var MultOverflowErr error = errors.New("An overflow occurred while multiplying two numbers")
 
 func SafeMult[T types.Number](a, b T, moreNumbersToMult ...T) (T, error) {
 	var product T = a * b
