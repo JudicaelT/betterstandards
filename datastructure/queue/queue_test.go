@@ -20,7 +20,7 @@ func BenchmarkToSlice(b *testing.B) {
 	queue := queuePackage.NewQueue(9, 10, 21)
 	codeUnderTest := func() { queue.ToSlice() }
 	benchmark.AvgRuntime(b, codeUnderTest)
-	benchmark.AssertAvgAllocs(b, 0, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
 }
 
 func BenchmarkLen(b *testing.B) {

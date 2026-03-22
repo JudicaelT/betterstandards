@@ -84,11 +84,11 @@ func TestPush(t *testing.T) {
 	stack.Push(21)
 
 	// Then the stack's length should have increased by 1
-	var stackSlice []int = stack.ToSlice()
 	length = stack.Len()
 	assert.Equal(t, 3, length)
 
 	// And the last item should be the pushed item
+	var stackSlice []int = stack.ToSlice()
 	var pushedItem int = stackSlice[2]
 	assert.Equal(t, 21, pushedItem)
 }

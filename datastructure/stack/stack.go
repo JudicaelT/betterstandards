@@ -4,50 +4,54 @@ import (
 	"errors"
 
 	"github.com/JudicaelT/betterstandards/assert"
-	"github.com/JudicaelT/betterstandards/datastructure/doublylinkedlist"
+	"github.com/JudicaelT/betterstandards/datastructure/singlylinkedlist"
 )
 
 var PopFromEmptyStackErr error = errors.New("Tried to pop an item from an empty stack")
 
 type Stack[T any] struct {
-	list *doublylinkedlist.List[T]
+	list *singlylinkedlist.List[T]
 }
 
 func NewStack[T any](items ...T) *Stack[T] {
-	return &Stack[T]{doublylinkedlist.New(items...)}
+	list, _ := singlylinkedlist.New[T]()
+	for i := len(items) - 1; i >= 0; i-- {
+		list.Append(items[i])
+	}
+	return &Stack[T]{list: list}
 }
 
-func (q *Stack[T]) IsEmpty() bool {
-	return q.list.IsEmpty()
+func (s *Stack[T]) IsEmpty() bool {
+	return s.list.IsEmpty()
 }
 
-func (q *Stack[T]) ToSlice() []T {
-	slice := make([]T, q.Len())
-	var i int
-	for node := q.list.Head(); node != nil; node = node.Next() {
+func (s *Stack[T]) ToSlice() []T {
+	slice := make([]T, s.Len())
+	var i int = s.Len()
+	for node := s.list.Head(); node != nil; node = node.Next() {
+		i--
 		slice[i] = node.Value
-		i++
 	}
 	return slice
 }
 
-func (q *Stack[T]) Len() int {
-	return q.list.Len()
+func (s *Stack[T]) Len() int {
+	return s.list.Len()
 }
 
-func (q *Stack[T]) Push(item T) {
-	q.list.Append(item)
+func (s *Stack[T]) Push(item T) {
+	s.list.Prepend(item)
 }
 
-func (q *Stack[T]) MustPop() T {
-	return assert.Must(q.Pop())
+func (s *Stack[T]) MustPop() T {
+	return assert.Must(s.Pop())
 }
 
-func (q *Stack[T]) Pop() (T, error) {
-	tail := q.list.PopTail()
-	if tail == nil {
+func (s *Stack[T]) Pop() (T, error) {
+	head := s.list.PopHead()
+	if head == nil {
 		var item T
 		return item, PopFromEmptyStackErr
 	}
-	return tail.Value, nil
+	return head.Value, nil
 }
