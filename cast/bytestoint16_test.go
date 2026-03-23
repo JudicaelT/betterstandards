@@ -5,7 +5,30 @@ import (
 	"testing"
 
 	"github.com/JudicaelT/betterstandards/cast"
+	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
+	"github.com/stretchr/testify/assert"
 )
+
+func BenchmarkCastBytesToInt16LittleEndianWithMoreThanOneByte(b *testing.B) {
+	bytes := []byte{255, 42}
+	codeUnderTest := func() { cast.BytesToInt16(bytes, binary.LittleEndian) }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
+}
+
+func BenchmarkCastBytesToInt16BigEndianWithMoreThanOneByte(b *testing.B) {
+	bytes := []byte{255, 42}
+	codeUnderTest := func() { cast.BytesToInt16(bytes, binary.BigEndian) }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
+}
+
+func BenchmarkCastBytesToInt16WithLessThanTwoBytes(b *testing.B) {
+	bytes := []byte{255}
+	codeUnderTest := func() { cast.BytesToInt16(bytes, binary.LittleEndian) }
+	benchmark.AvgRuntime(b, codeUnderTest)
+	benchmark.AssertNoAllocs(b, codeUnderTest)
+}
 
 func TestCastBytesToInt16LittleEndianWithMoreThanOneByte(t *testing.T) {
 	// Given a slice of two bytes and a slice of more than two bytes
@@ -13,26 +36,24 @@ func TestCastBytesToInt16LittleEndianWithMoreThanOneByte(t *testing.T) {
 	threeByteSlice := []byte{255, 42, 33, 200, 42}
 
 	// When we cast the slices to int16 LittleEndian
-	for _, byteSlice := range [][]byte{twoByteSlice, threeByteSlice} {
-		result, err := cast.BytesToInt16(byteSlice, binary.LittleEndian)
+	for _, bytes := range [][]byte{twoByteSlice, threeByteSlice} {
+		result, err := cast.BytesToInt16(bytes, binary.LittleEndian)
 
 		// Then it should return 42 * 256 + 255 = 11007
-		if result != 11007 {
-			t.Errorf(
-				"(Dataset: %v) Failed asserting that result is equal to 11007. Got %d",
-				byteSlice,
-				result,
-			)
-		}
-
+		assert.Equal(
+			t,
+			int16(11007),
+			result,
+			"Test failed for dataset: %v",
+			bytes,
+		)
 		// And not return an error
-		if err != nil {
-			t.Errorf(
-				"(Dataset: %v) Failed asserting that error is nil: %s",
-				byteSlice,
-				err,
-			)
-		}
+		assert.NoError(
+			t,
+			err,
+			"Test failed for dataset: %v",
+			bytes,
+		)
 	}
 }
 
@@ -42,26 +63,24 @@ func TestCastBytesToInt16BigEndianWithMoreThanOneByte(t *testing.T) {
 	threeByteSlice := []byte{255, 42, 33, 200, 42}
 
 	// When we cast the slices to int16 using BigEndian
-	for _, byteSlice := range [][]byte{twoByteSlice, threeByteSlice} {
-		result, err := cast.BytesToInt16(byteSlice, binary.BigEndian)
+	for _, bytes := range [][]byte{twoByteSlice, threeByteSlice} {
+		result, err := cast.BytesToInt16(bytes, binary.BigEndian)
 
 		// Then it should return 255 * 256 + 42 - 65536 = -214
-		if result != -214 {
-			t.Errorf(
-				"(Dataset: %v) Failed asserting that result is equal to -214. Got %d",
-				byteSlice,
-				result,
-			)
-		}
-
+		assert.Equal(
+			t,
+			int16(-214),
+			result,
+			"Test failed for dataset: %v",
+			bytes,
+		)
 		// And not return an error
-		if err != nil {
-			t.Errorf(
-				"(Dataset: %v) Failed asserting that error is nil: %s",
-				byteSlice,
-				err,
-			)
-		}
+		assert.NoError(
+			t,
+			err,
+			"Test failed for dataset: %v",
+			bytes,
+		)
 	}
 }
 
@@ -73,22 +92,10 @@ func TestCastBytesToInt16WithLessThanTwoBytes(t *testing.T) {
 	result, err := cast.BytesToInt16(oneByteSlice, binary.LittleEndian)
 
 	// Then it should return 0
-	if result != 0 {
-		t.Error("Failed asserting that result is equal to 0. Got", result)
-	}
-
+	assert.Equal(t, int16(0), result)
 	// And also return an error with the expected message
-	if err == nil {
-		t.Error("Failed asserting that error is not nil")
-		return
-	}
+	assert.Error(t, err)
 	expectedMessage := "Cannot convert []byte to int16 because it contains less than 2 bytes (1 given)"
 	actualMessage := err.Error()
-	if expectedMessage != actualMessage {
-		t.Errorf(
-			"Expected error message '%s' but got '%s'",
-			expectedMessage,
-			actualMessage,
-		)
-	}
+	assert.Equal(t, expectedMessage, actualMessage)
 }
