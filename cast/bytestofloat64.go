@@ -6,12 +6,21 @@ import (
 	"math"
 )
 
-func BytesToFloat64(value []byte, byteOrder binary.ByteOrder) (float64, error) {
-	if len(value) < 8 {
-		return 0, fmt.Errorf(
-			"Cannot convert []byte to float64 because it contains less than 8 bytes (%d given)",
-			len(value),
-		)
+type CastBytesToFloat64Err struct {
+	BytesProvided int
+}
+
+func (c CastBytesToFloat64Err) Error() string {
+	return fmt.Sprintf(
+		"Cannot convert []byte to float64 because it contains less than 8 bytes (%d given)",
+		c.BytesProvided,
+	)
+}
+
+func BytesToFloat64(bytes []byte, byteOrder binary.ByteOrder) (float64, error) {
+	var bytesProvided int = len(bytes)
+	if bytesProvided < 8 {
+		return 0, CastBytesToFloat64Err{BytesProvided: bytesProvided}
 	}
-	return math.Float64frombits(byteOrder.Uint64(value)), nil
+	return math.Float64frombits(byteOrder.Uint64(bytes)), nil
 }
