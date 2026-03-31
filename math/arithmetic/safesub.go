@@ -8,7 +8,7 @@ import (
 
 var SubOverflowErr error = errors.New("An overflow occurred while subtracting two numbers")
 
-func SafeSub[T types.Number](a, b T, moreNumbersToSub ...T) (T, error) {
+func SafeSub[T types.Numeric](a, b T, moreNumbersToSub ...T) (T, error) {
 	var diff T = a - b
 	var hasOverflowed bool = subHasOverflowed(diff, a, b)
 	for _, number := range moreNumbersToSub {
@@ -22,6 +22,6 @@ func SafeSub[T types.Number](a, b T, moreNumbersToSub ...T) (T, error) {
 	return diff, nil
 }
 
-func subHasOverflowed[T types.Number](diff, a, b T) bool {
+func subHasOverflowed[T types.Numeric](diff, a, b T) bool {
 	return (diff < a) != (b > 0)
 }

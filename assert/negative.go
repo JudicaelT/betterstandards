@@ -6,7 +6,7 @@ import (
 	"github.com/JudicaelT/betterstandards/types"
 )
 
-func Negative[T types.Number](value T) {
+func Negative[T types.Numeric](value T) {
 	if value >= 0 {
 		panic(fmt.Errorf(
 			"Failed asserting that value is negative. Got: %v",

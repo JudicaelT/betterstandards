@@ -1,5 +1,5 @@
 package types
 
-type Number interface {
+type Numeric interface {
 	Int | Float
 }

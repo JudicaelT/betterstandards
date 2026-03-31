@@ -5,7 +5,7 @@ import (
 	"github.com/JudicaelT/betterstandards/types"
 )
 
-func Quotient[T types.Number](slice []T) (T, error) {
+func Quotient[T types.Numeric](slice []T) (T, error) {
 	var sliceLen int = len(slice)
 	if sliceLen < 2 {
 		if sliceLen == 1 {

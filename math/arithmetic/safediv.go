@@ -11,7 +11,7 @@ import (
 var DivOverflowErr error = errors.New("An overflow occurred while dividing two numbers")
 var DivByZeroErr error = errors.New("Cannot divide by zero")
 
-func SafeDiv[T types.Number](a, b T, moreNumbersToDiv ...T) (T, error) {
+func SafeDiv[T types.Numeric](a, b T, moreNumbersToDiv ...T) (T, error) {
 	if b == 0 {
 		return 0, DivByZeroErr
 	}
@@ -30,7 +30,7 @@ func SafeDiv[T types.Number](a, b T, moreNumbersToDiv ...T) (T, error) {
 	return quotient, nil
 }
 
-func divHasOverflowed[T types.Number](a, b T) bool {
+func divHasOverflowed[T types.Numeric](a, b T) bool {
 	switch reflect.TypeOf(a).Kind() {
 	case reflect.Int:
 		aInt, _ := any(a).(int)

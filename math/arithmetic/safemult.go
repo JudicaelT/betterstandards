@@ -8,7 +8,7 @@ import (
 
 var MultOverflowErr error = errors.New("An overflow occurred while multiplying two numbers")
 
-func SafeMult[T types.Number](a, b T, moreNumbersToMult ...T) (T, error) {
+func SafeMult[T types.Numeric](a, b T, moreNumbersToMult ...T) (T, error) {
 	var product T = a * b
 	var hasOverflowed bool = multHasOverflowed(product, a, b)
 	for _, number := range moreNumbersToMult {
@@ -22,6 +22,6 @@ func SafeMult[T types.Number](a, b T, moreNumbersToMult ...T) (T, error) {
 	return product, nil
 }
 
-func multHasOverflowed[T types.Number](product, a, b T) bool {
+func multHasOverflowed[T types.Numeric](product, a, b T) bool {
 	return a != 0 && product/a != b
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/JudicaelT/betterstandards/types"
 )
 
-func GreaterThan[T types.Number](a, b T) {
+func GreaterThan[T types.Numeric](a, b T) {
 	if a <= b {
 		panic(fmt.Errorf(
 			"Failed asserting that value A ('%v') is greater than value B ('%v')",

@@ -5,7 +5,7 @@ import (
 	"github.com/JudicaelT/betterstandards/types"
 )
 
-func Sum[T types.Number](slice []T) (T, error) {
+func Sum[T types.Numeric](slice []T) (T, error) {
 	var sliceLen int = len(slice)
 	if sliceLen < 2 {
 		if sliceLen == 1 {
