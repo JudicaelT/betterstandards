@@ -4,8 +4,100 @@ import (
 	"testing"
 
 	"github.com/JudicaelT/betterstandards/datastructure/doublylinkedlist"
+	"github.com/JudicaelT/betterstandards/internal/test/benchmark"
 	"github.com/stretchr/testify/assert"
 )
+
+func BenchmarkRemoveFromList(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Head().Next().Remove() }
+	resetList := func() { list.Head().InsertNext(10) }
+	benchmark.AvgRuntime(bench, codeUnderTest, resetList)
+	benchmark.AssertNoAllocs(bench, codeUnderTest, resetList)
+}
+
+func BenchmarkNext(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Head().Next() }
+	benchmark.AvgRuntime(bench, codeUnderTest)
+	benchmark.AssertNoAllocs(bench, codeUnderTest)
+}
+
+func BenchmarkPrev(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Tail().Prev() }
+	benchmark.AvgRuntime(bench, codeUnderTest)
+	benchmark.AssertNoAllocs(bench, codeUnderTest)
+}
+
+func BenchmarkInsertNext(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Tail().InsertNext(42) }
+	resetList := func() { list.PopTail() }
+	benchmark.AvgRuntime(bench, codeUnderTest, resetList)
+	benchmark.AssertAvgAllocs(bench, 1, codeUnderTest, resetList)
+}
+
+func BenchmarkInsertPrev(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Head().InsertPrev(42) }
+	resetList := func() { list.PopHead() }
+	benchmark.AvgRuntime(bench, codeUnderTest, resetList)
+	benchmark.AssertAvgAllocs(bench, 1, codeUnderTest, resetList)
+}
+
+func BenchmarkRemoveHeadFromList(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Head().Remove() }
+	resetList := func() { list.Prepend(9) }
+	benchmark.AvgRuntime(bench, codeUnderTest, resetList)
+	benchmark.AssertNoAllocs(bench, codeUnderTest, resetList)
+}
+
+func BenchmarkRemoveTailFromList(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Tail().Remove() }
+	resetList := func() { list.Prepend(21) }
+	benchmark.AvgRuntime(bench, codeUnderTest, resetList)
+	benchmark.AssertNoAllocs(bench, codeUnderTest, resetList)
+}
+
+func BenchmarkMoveBefore(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Tail().MoveBefore(list.Head()) }
+	resetList := func() { list.Head().MoveAfter(list.Tail()) }
+	benchmark.AvgRuntime(bench, codeUnderTest, resetList)
+	benchmark.AssertNoAllocs(bench, codeUnderTest, resetList)
+}
+
+func BenchmarkMoveAfter(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Head().MoveAfter(list.Tail()) }
+	resetList := func() { list.Tail().MoveBefore(list.Head()) }
+	benchmark.AvgRuntime(bench, codeUnderTest, resetList)
+	benchmark.AssertNoAllocs(bench, codeUnderTest, resetList)
+}
+
+func BenchmarkIsHeadOfList(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Head().IsHeadOfList() }
+	benchmark.AvgRuntime(bench, codeUnderTest)
+	benchmark.AssertNoAllocs(bench, codeUnderTest)
+}
+
+func BenchmarkIsTailOfList(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Tail().IsTailOfList() }
+	benchmark.AvgRuntime(bench, codeUnderTest)
+	benchmark.AssertNoAllocs(bench, codeUnderTest)
+}
+
+func BenchmarkIsOrphan(bench *testing.B) {
+	list := doublylinkedlist.New[int8](9, 10, 21)
+	codeUnderTest := func() { list.Tail().IsTailOfList() }
+	benchmark.AvgRuntime(bench, codeUnderTest)
+	benchmark.AssertNoAllocs(bench, codeUnderTest)
+}
 
 func TestRemoveFromList(t *testing.T) {
 	// Given a DoublyLinkedList

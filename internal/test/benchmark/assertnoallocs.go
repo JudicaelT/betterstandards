@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+const noAllocsRuns int = 1000
+
 func AssertNoAllocs(
 	b *testing.B,
 	codeUnderTest func(),
@@ -14,9 +16,7 @@ func AssertNoAllocs(
 		defer runtime.GOMAXPROCS(runtime.GOMAXPROCS(1))
 
 		var totalAllocs uint64 = 0
-		var runs int = 1000
-
-		for range runs {
+		for range noAllocsRuns {
 			var before, after runtime.MemStats
 			runtime.ReadMemStats(&before)
 			codeUnderTest()
@@ -27,7 +27,7 @@ func AssertNoAllocs(
 			}
 		}
 
-		avgAllocs := float64(totalAllocs / uint64(runs))
+		avgAllocs := float64(totalAllocs / uint64(noAllocsRuns))
 		if avgAllocs > 0 {
 			b.Fatalf(
 				"Expected zero allocations, got %.2f allocs on average",
